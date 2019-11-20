@@ -500,7 +500,7 @@ void runOnMainQueueWithoutDeadlocking(void (^block)(void)) {
         //
         documentProvider.annotationManager.annotationProviders = @[XFDFProvider];
     };
-    
+
     return document;
 }
 
@@ -1383,7 +1383,7 @@ static NSString *PSPDFStringFromCGRect(CGRect rect) {
     _pdfDocument = nil;
     _pdfController = nil;
     _navigationController = nil;
-    
+
     //send event
     [self sendEventWithJSON:@"{type:'didDismiss'}"];
 }
@@ -1412,7 +1412,7 @@ static NSString *PSPDFStringFromCGRect(CGRect rect) {
 
 - (void)flexibleToolbarContainerDidHide:(nonnull PSPDFFlexibleToolbarContainer *)container {
     [self sendEventWithJSON:@"{type:'flexibleToolbarContainerDidHide'}"];
-} 
+}
 
 - (CGRect)flexibleToolbarContainerContentRect:(PSPDFFlexibleToolbarContainer *)container forToolbarPosition:(PSPDFFlexibleToolbarPosition)position {
     // This calls though to the default PDF controller implementation that excludes main UI elements from the available content rect.
@@ -1481,7 +1481,7 @@ static NSString *PSPDFStringFromCGRect(CGRect rect) {
     if (annotationUUID.length == 0) {
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Invalid annotation UUID."] callbackId:command.callbackId];
     }
-    
+
     PSPDFDocument *document = self.pdfController.document;
     VALIDATE_DOCUMENT(document)
     BOOL success = NO;
@@ -1756,16 +1756,17 @@ static NSString *PSPDFStringFromCGRect(CGRect rect) {
 
 - (void)processAnnotations:(CDVInvokedUrlCommand *)command {
     PSPDFAnnotationChange change = (PSPDFAnnotationChange)[self optionsValueForKeys:@[[command argumentAtIndex:0]] ofType:@"PSPDFAnnotationChange" withDefault:PSPDFAnnotationChangeEmbed];
-    NSURL *processedDocumentURL = [self writableFileURLWithPath:[command argumentAtIndex:1] override:YES copyIfNeeded:NO];
+    NSURL *originalDocumentURL = [self fileURLWithPath:[command argumentAtIndex:1]];
+    NSURL *processedDocumentURL = [self writableFileURLWithPath:[command argumentAtIndex:2] override:YES copyIfNeeded:NO];
 
     // The annotation type is optional. We default to `All` if it's not specified.
-    NSString *typeString = [command argumentAtIndex:2] ?: [command argumentAtIndex:3];
+    NSString *typeString = [command argumentAtIndex:3] ?: [command argumentAtIndex:4];
     PSPDFAnnotationType type = PSPDFAnnotationTypeAll;
     if (typeString.length > 0) {
         type = (PSPDFAnnotationType) [self optionsValueForKeys:@[typeString] ofType:@"PSPDFAnnotationType" withDefault:PSPDFAnnotationTypeAll];
     }
 
-    PSPDFDocument *document = self.pdfController.document;
+    PSPDFDocument *document = [[PSPDFDocument alloc] initWithURL:originalDocumentURL];
     VALIDATE_DOCUMENT(document)
 
     // Create a processor configuration with the current document.

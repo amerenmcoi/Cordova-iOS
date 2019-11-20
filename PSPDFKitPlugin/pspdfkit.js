@@ -11,9 +11,9 @@
 //
 
 var PSPDFKitPlugin = new function() {
-    
+
     // Utilities
-    
+
     var self = this;
     function addMethods(methods) {
         for (var name in methods) {
@@ -41,11 +41,11 @@ var PSPDFKitPlugin = new function() {
             })();
         }
     }
-    
+
     // Events
-    
+
     var listeners = {};
-    
+
     this.dispatchEvent = function(event) {
         var result = undefined;
         var functions = listeners[event.type];
@@ -87,19 +87,19 @@ var PSPDFKitPlugin = new function() {
     }
 
     // License key
-    
+
     addMethods({
         setLicenseKey: ['key'],
     });
 
     // PDF Generation method
-    
+
     addMethods({
         convertPDFFromHTMLString: ['html', 'fileName', 'options', 'callback'],
     });
-    
+
     // Document methods
-    
+
     addMethods({
         present: ['path', 'callback', 'options'],
         presentWithXFDF: ['path', 'xfdfPath', 'callback', 'options'],
@@ -109,18 +109,18 @@ var PSPDFKitPlugin = new function() {
         saveAnnotations: ['callback'],
         getHasDirtyAnnotations: ['callback'],
     });
-    
+
     // Configuration
-    
+
     addMethods({
         setOptions: ['options', 'animated'],
         getOptions: ['names', 'callback'],
         setOption: ['name', 'value', 'animated'],
         getOption: ['name', 'callback'],
     });
-    
+
     // Page scrolling
-    
+
     addMethods({
         setPage: ['page', 'animated'],
         getPage: ['callback'],
@@ -131,7 +131,7 @@ var PSPDFKitPlugin = new function() {
     });
 
     // Appearance
-    
+
     addMethods({
         setAppearanceMode: ['appearanceMode'],
     });
@@ -144,10 +144,10 @@ var PSPDFKitPlugin = new function() {
     });
 
     // Toolbar
-    
+
     var leftBarButtonItems = ['close'];
     var rightBarButtonItems = ['search', 'outline', 'thumbnails'];
-    
+
     this.dispatchLeftBarButtonAction = function(index)
     {
         leftBarButtonItems[index].action();
@@ -176,7 +176,7 @@ var PSPDFKitPlugin = new function() {
     {
         callback(leftBarButtonItems);
     }
-    
+
     this.getRightBarButtonItems = function(callback)
     {
         callback(rightBarButtonItems);
@@ -188,7 +188,7 @@ var PSPDFKitPlugin = new function() {
         showAnnotationToolbar: [],
         toggleAnnotationToolbar: [],
     });
-    
+
     // Instant JSON
     addMethods({
         applyInstantJSON: ['jsonValue', 'callback'],
@@ -197,22 +197,22 @@ var PSPDFKitPlugin = new function() {
         getAnnotations: ['pageIndex', 'type', 'callback'],
         getAllUnsavedAnnotations: ['callback']
     });
-    
+
     // Forms
     addMethods({
         setFormFieldValue: ['value', 'fullyQualifiedName', 'callback'],
         getFormFieldValue: ['fullyQualifiedName', 'callback'],
     });
-    
+
     // XFDF
     addMethods({
         importXFDF: ['xfdfPath', 'callback'],
         exportXFDF: ['xfdfPath', 'callback'],
     });
-	
+
     // Document Processing
     addMethods({
-        processAnnotations: ['annotationChange', 'processedDocumentPath', 'callback', 'annotationType'],
+        processAnnotations: ['annotationChange', 'originalDocumentPath', 'processedDocumentPath', 'callback', 'annotationType'],
     });
 };
 module.exports = PSPDFKitPlugin;
